@@ -1,17 +1,16 @@
-/*******************************************************************************
-ReferenceFinder 4.0
+# ReferenceFinder 4.0
 
 A Program for Origami Design
 
 Contact:
   web: http://www.langorigami.com/reffinder/reffinder.php4
   email: reffinder@langorigami.com
-  
+
 Developers:
   Robert J. Lang (lead)
   Carlos Furuti (Linux port)
   Wlodzimierz 'ABX' Skiba (MSW port)
-  
+
 Special thanks:
   Stefan Csomer (wxMac guru)
   The wxWidgets Team
@@ -27,7 +26,7 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
 this program (in a file called LICENSE.txt); if not, go to
-http://www.gnu.org/copyleft/gpl.html or write to 
+http://www.gnu.org/copyleft/gpl.html or write to
 
   Free Software Foundation, Inc.
   59 Temple Place - Suite 330
@@ -38,8 +37,7 @@ website at:
 
   http://www.langorigami.com
 
-/*******************************************************************************
-Information for Programmers
+## Information for Programmers
 
 ReferenceFinder consists of two projects that can be built individually or
 together. Source code and headers for all projects is contained within the
@@ -51,7 +49,7 @@ files. However, you will need to download and build the wxWidgets libraries
 source contains the following subdirectories:
 
 source/model contains the complete ReferenceFinder mathematical model, no UI
-code. 
+code.
 
 source/console contains a simple console implementation of
 ReferenceFinder, no GUI.
@@ -64,8 +62,7 @@ source/help contains HTML documentation for the GUI.
 
 source/about contains the HTML about box for the GUI.
 
-********************************************************************************
-To build ReferenceFinder:
+## To build ReferenceFinder:
 
 Detailed build instructions for Macintosh, Linux, and Windows are given within
 the platform-specific directories (mac, linux, and msw, respectively). Your
@@ -88,8 +85,7 @@ different build system from what we've set up, examine the code for function
 RFApp::OnInit() and the wxWidgets documentation to figure out the appropriate
 locations for your system.
 
-********************************************************************************
-Supported Platforms and environments
+## Supported Platforms and environments
 
 ReferenceFinder has been successfully built in the following environments:
 
@@ -98,7 +94,7 @@ your project file. Note that the wxWidget libraries must be built with
 Mac-specific options; for simplicity, use the script files in the mac
 subdirectory. Check mac/README_mac.txt for further details about building.
 
-Linux -- i386, GCC 4.0.0, GTK+-2.0. Instructions for compiling wxWidget are 
+Linux -- i386, GCC 4.0.0, GTK+-2.0. Instructions for compiling wxWidget are
 included.
 
 Windows -- Visual Studio Express Edition 2005. Visual Studio 6 won't work
@@ -110,4 +106,3 @@ like to make your own user interface. The console interface
 (ReferenceFinder_console.cpp) provides a minimal example of how you interact
 with the model.
 
-*******************************************************************************/

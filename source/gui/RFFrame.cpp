@@ -3,11 +3,11 @@ File:         RFFrame.cpp
 Project:      ReferenceFinder 4.x
 Purpose:      Implementation for main frame class
 Author:       Robert J. Lang
-Modified by:  
+Modified by:
 Created:      2006-04-24
 Copyright:    ©1999-2006 Robert J. Lang. All Rights Reserved.
 ******************************************************************************/
- 
+
 #include "RFFrame.h"
 #include "RFThread.h"
 #include "RFApp.h"
@@ -58,7 +58,7 @@ Parser gParser;
 
 
 // the application icon (under Windows, Mac, and OS/2 it is in resource file)
-#ifdef __WXGTK__     
+#ifdef __WXGTK__
   #include "icon.xpm" /* ICON_FRAME */
 #endif // __WXGTK__
 
@@ -76,7 +76,7 @@ int RFFrame::sSearchNum = 5;
 /*****
 Constructor
 *****/
-RFFrame::RFFrame(const wxString& title) : 
+RFFrame::RFFrame(const wxString& title) :
   wxFrame(NULL, wxID_ANY, title)
 {
 #ifndef __WXMAC__
@@ -93,7 +93,7 @@ RFFrame::RFFrame(const wxString& title) :
       RFStackSizer ss(new wxBoxSizer(wxHORIZONTAL), panel);
       {
         const int EXTRA_SPACE = 1;
-        RFStackSizer ss(new wxGridSizer(1, 5, 5), 
+        RFStackSizer ss(new wxGridSizer(1, 5, 5),
           wxSizerFlags().Expand().Border(wxALL, 2));
         ss.Add(mPointButton = new wxRadioButton(panel, RFID_POINT, wxT("Point")),
           wxSizerFlags().Border(wxTOP, EXTRA_SPACE));
@@ -106,25 +106,25 @@ RFFrame::RFFrame(const wxString& title) :
       ss.AddSpacer(5);
       {
         const int EXTRA_SPACE = 2;
-        RFStackSizer ss(new wxFlexGridSizer(5, 5, 5), 
+        RFStackSizer ss(new wxFlexGridSizer(5, 5, 5),
           wxSizerFlags().Border(wxALL, 2));
         ss.Add(mX1StatText = new wxStaticText(panel, wxID_ANY, wxT("x1 =")),
           wxSizerFlags().Border(wxTOP, EXTRA_SPACE));
-        ss.Add(mX1TextCtrl = new RFTextCtrl(panel, wxID_ANY, wxEmptyString, 
+        ss.Add(mX1TextCtrl = new RFTextCtrl(panel, wxID_ANY, wxEmptyString,
           wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER));
         ss.AddSpacer(5);
         ss.Add(mY1StatText = new wxStaticText(panel, wxID_ANY, wxT("y1 =")),
           wxSizerFlags().Border(wxTOP, EXTRA_SPACE));
-        ss.Add(mY1TextCtrl = new RFTextCtrl(panel, wxID_ANY, wxEmptyString, 
+        ss.Add(mY1TextCtrl = new RFTextCtrl(panel, wxID_ANY, wxEmptyString,
           wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER));
         ss.Add(mX2StatText = new wxStaticText(panel, wxID_ANY, wxT("x2 =")),
           wxSizerFlags().Border(wxTOP, EXTRA_SPACE));
-        ss.Add(mX2TextCtrl = new RFTextCtrl(panel, wxID_ANY, wxEmptyString, 
+        ss.Add(mX2TextCtrl = new RFTextCtrl(panel, wxID_ANY, wxEmptyString,
           wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER));
         ss.AddSpacer(5);
         ss.Add(mY2StatText = new wxStaticText(panel, wxID_ANY, wxT("y2 =")),
           wxSizerFlags().Border(wxTOP, EXTRA_SPACE));
-        ss.Add(mY2TextCtrl = new RFTextCtrl(panel, wxID_ANY, wxEmptyString, 
+        ss.Add(mY2TextCtrl = new RFTextCtrl(panel, wxID_ANY, wxEmptyString,
           wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER));
      }
      ss.AddSpacer(10);
@@ -136,13 +136,13 @@ RFFrame::RFFrame(const wxString& title) :
     mScrolledWindow->SetBackgroundColour(*wxWHITE);
     {
       RFStackSizer ss(new wxBoxSizer(wxVERTICAL), mScrolledWindow);
-      ss.Add(gCanvas = new RFCanvas(mScrolledWindow), 
+      ss.Add(gCanvas = new RFCanvas(mScrolledWindow),
         wxSizerFlags().Border(wxALL, SCREEN_BORDER));
     }
     ss.Add(mScrolledWindow, wxSizerFlags(1).Expand());
     CreateStatusBar();
   }
-  
+
   // Compute the difference between the frame size and the space available for
   // displaying the canvas image. This is used to set the VirtualSizeHints for
   // the frame after a change in canvas size.
@@ -151,12 +151,12 @@ RFFrame::RFFrame(const wxString& title) :
   mScrolledWindow->GetSize(&sw, &sh);
   mWidthDiff = fw - sw + 2 * SCREEN_BORDER;
   mHeightDiff = fh - sh + 2 * SCREEN_BORDER;
-  
+
   // Also record the minimum size of the frame (for zero-size canvas) and the
   // corresponding visible image width.
   mMinSize = GetBestSize();
   mMinImageWidth = mMinSize.x - mWidthDiff;
-  
+
   DoSetPoints();
 }
 
@@ -166,10 +166,10 @@ Validate one of the text fields for a valid, parseable expression that lies
 within the specified range. Return true if it's valid and set ret to the
 numerical value.
 *****/
-bool RFFrame::ValidateEntry(wxTextCtrl* textCtrl, double minVal, double maxVal, 
+bool RFFrame::ValidateEntry(wxTextCtrl* textCtrl, double minVal, double maxVal,
   double& ret)
 {
-  string buffer = textCtrl->GetValue().c_str();
+  string buffer = textCtrl->GetValue().ToStdString();
   Parser::Status status = gParser.evaluate(buffer, ret, false);
   if (! status.isOK ()) {
     wxString msg = wxString::Format(wxT("\"%s\" cannot be parsed: %s"),
@@ -257,7 +257,7 @@ void RFFrame::SizeFromCanvas(int imageWidth, int imageHeight)
     newWidth += SCROLLBAR_SIZE;
   }
   SetSizeHints(mMinSize.x, mMinSize.y, newWidth, newHeight);
-  
+
   // Reposition the window if necessary to keep it from going off the screen.
   int newX, newY;
   GetPosition(&newX, &newY);
@@ -286,12 +286,12 @@ Handle Export Postscript menu item
 void RFFrame::OnExportPS(wxCommandEvent&)
 {
   if (!gCanvas || !gCanvas->HasContent()) return;
-  
-  wxFileDialog fileDialog(this, wxT("Export PostScript"), wxEmptyString, 
-    wxT("untitled.ps"), wxT("*.ps"), wxSAVE | wxOVERWRITE_PROMPT);
+
+  wxFileDialog fileDialog(this, wxT("Export PostScript"), wxEmptyString,
+    wxT("untitled.ps"), wxT("*.ps"), wxFC_SAVE | wxFD_OVERWRITE_PROMPT);
   if (fileDialog.ShowModal() == wxID_CANCEL) return;
   wxString fileName = fileDialog.GetPath();
-  
+
   ofstream fout(fileName.c_str());
   if (!fout.is_open()) {
     wxString msg = wxString::Format(wxT("Sorry, unable to open file \"%s\""),
@@ -299,7 +299,7 @@ void RFFrame::OnExportPS(wxCommandEvent&)
     wxMessageBox(msg, wxT("Export Error"), wxICON_ERROR | wxOK, this);
     return;
   }
-  
+
   gCanvas->DoDrawPS(fout);
   fout.close();
 }
@@ -329,7 +329,7 @@ void RFFrame::OnPrint(wxCommandEvent&)
         "Perhaps your current printer is not set correctly?");
       wxMessageBox(msg, wxT("Printing Error"), wxOK | wxICON_ERROR);
     }
-  } 
+  }
   else
     (*gApp->GetPrintData()) = printer.GetPrintDialogData().GetPrintData();
 }
@@ -350,7 +350,7 @@ Handle the Print Preview command
 void RFFrame::OnPrintPreview(wxCommandEvent&)
 {
   wxPrintDialogData printDialogData(*gApp->GetPrintData());
-  wxPrintPreview *preview = new wxPrintPreview(new RFPrintout, new RFPrintout, 
+  wxPrintPreview *preview = new wxPrintPreview(new RFPrintout, new RFPrintout,
     &printDialogData);
   if (!preview->Ok())
   {
@@ -361,7 +361,7 @@ void RFFrame::OnPrintPreview(wxCommandEvent&)
     wxMessageBox(msg, wxT("Previewing Error"), wxOK | wxICON_ERROR);
     return;
   }
-  wxPreviewFrame* frame = new wxPreviewFrame(preview, this, 
+  wxPreviewFrame* frame = new wxPreviewFrame(preview, this,
     wxT("ReferenceFinder Print Preview"), wxPoint(100, 100), wxSize(600, 650));
   frame->Center(wxBOTH);
   frame->Initialize();
@@ -411,11 +411,11 @@ void RFFrame::OnGetReferences(wxCommandEvent&)
   // On some platforms, GUI passes command-key equivalents even if menu item
   // isn't enabled, so we silently ignore commands if we're not ready yet.
   if (!RFThread::IsReady()) return;
-  
+
   XYPt p1;
-  if (!ValidateEntry(mX1TextCtrl, 0, 
+  if (!ValidateEntry(mX1TextCtrl, 0,
     ReferenceFinder::sPaper.mWidth, p1.x)) return;
-  if (!ValidateEntry(mY1TextCtrl, 0, 
+  if (!ValidateEntry(mY1TextCtrl, 0,
     ReferenceFinder::sPaper.mHeight, p1.y)) return;
 
   if (mPointButton->GetValue()) {
@@ -424,7 +424,7 @@ void RFFrame::OnGetReferences(wxCommandEvent&)
     ReferenceFinder::FindBestMarks(p1, marks, sSearchNum);
     if (marks.empty()) {
       wxString msg(wxT("Sorry, ReferenceFinder was unable to find a match for this mark."));
-      wxMessageBox(msg, wxT("Search Error"), 
+      wxMessageBox(msg, wxT("Search Error"),
         wxOK | wxICON_ERROR, this);
       return;
     }
@@ -435,13 +435,13 @@ void RFFrame::OnGetReferences(wxCommandEvent&)
   else {
     // Get references for a line
     XYPt p2;
-    if (!ValidateEntry(mX2TextCtrl, 0, 
+    if (!ValidateEntry(mX2TextCtrl, 0,
       ReferenceFinder::sPaper.mWidth, p2.x)) return;
-    if (!ValidateEntry(mY2TextCtrl, 0, 
+    if (!ValidateEntry(mY2TextCtrl, 0,
       ReferenceFinder::sPaper.mHeight, p2.y)) return;
     if ((p1 - p2).Mag() < 0.01) {
       wxString msg(wxT("Sorry, your points are too close together. Please pick points separated by more than 0.01."));
-      wxMessageBox(msg, wxT("Line Error"), 
+      wxMessageBox(msg, wxT("Line Error"),
         wxOK | wxICON_ERROR, this);
       return;
     }
@@ -450,7 +450,7 @@ void RFFrame::OnGetReferences(wxCommandEvent&)
     ReferenceFinder::FindBestLines(line, lines, sSearchNum);
     if (lines.empty()) {
       wxString msg(wxT("Sorry, ReferenceFinder was unable to find a match for this line."));
-      wxMessageBox(msg, wxT("Search Error"), 
+      wxMessageBox(msg, wxT("Search Error"),
         wxOK | wxICON_ERROR, this);
       return;
     }

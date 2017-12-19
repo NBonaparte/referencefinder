@@ -3,11 +3,11 @@ File:         RFCanvas.cpp
 Project:      ReferenceFinder 4.x
 Purpose:      Implementation for diagram display window class
 Author:       Robert J. Lang
-Modified by:  
+Modified by:
 Created:      2006-04-24
 Copyright:    ©1999-2006 Robert J. Lang. All Rights Reserved.
 ******************************************************************************/
- 
+
 #include "RFCanvas.h"
 #include "RFThread.h"
 #include "RFFrame.h"
@@ -36,7 +36,7 @@ int RFCanvas::sDgmSpacing = 10;
 /*****
 Constructor
 *****/
-RFCanvas::RFCanvas(wxWindow* parent) : 
+RFCanvas::RFCanvas(wxWindow* parent) :
   wxWindow(parent, wxID_ANY),
   mDC(0),
   mDCScale(1.0),
@@ -50,7 +50,7 @@ Return true if we're showing something
 *****/
 bool RFCanvas::HasContent()
 {
-  return (mShowWhat == SHOW_MARKS && mMarks.size()) || 
+  return (mShowWhat == SHOW_MARKS && mMarks.size()) ||
     (mShowWhat == SHOW_LINES && mLines.size());
 }
 
@@ -80,10 +80,10 @@ void RFCanvas::SetContentMarks(const wxString& x1text, const wxString& y1text,
   mMarks = marks;
   mLines.clear();
   mStats.clear();
-  mTargetText = wxString::Format(wxT("Paper: (%s x %s), "), 
-    ReferenceFinder::sPaper.mWidthAsText.c_str(), 
+  mTargetText = wxString::Format(wxT("Paper: (%s x %s), "),
+    ReferenceFinder::sPaper.mWidthAsText.c_str(),
     ReferenceFinder::sPaper.mHeightAsText.c_str());
-  mTargetText += wxString::Format(wxT("Target: point (%s, %s)"), 
+  mTargetText += wxString::Format(wxT("Target: point (%s, %s)"),
     x1text.c_str(), y1text.c_str());
   SizeImageAndFrame();
 }
@@ -93,7 +93,7 @@ void RFCanvas::SetContentMarks(const wxString& x1text, const wxString& y1text,
 Set the content to display one or more lines
 *****/
 void RFCanvas::SetContentLines(const wxString& x1text, const wxString& y1text,
-  const wxString& x2text, const wxString& y2text, const XYLine& line, 
+  const wxString& x2text, const wxString& y2text, const XYLine& line,
   const std::vector<RefLine*>& lines)
 {
   mShowWhat = SHOW_LINES;
@@ -105,10 +105,10 @@ void RFCanvas::SetContentLines(const wxString& x1text, const wxString& y1text,
   mLines = lines;
   mMarks.clear();
   mStats.clear();
-  mTargetText = wxString::Format(wxT("Paper: (%s x %s), "), 
-    ReferenceFinder::sPaper.mWidthAsText.c_str(), 
+  mTargetText = wxString::Format(wxT("Paper: (%s x %s), "),
+    ReferenceFinder::sPaper.mWidthAsText.c_str(),
     ReferenceFinder::sPaper.mHeightAsText.c_str());
-  mTargetText += wxString::Format(wxT("Target: line through (%s, %s) and (%s, %s)"), 
+  mTargetText += wxString::Format(wxT("Target: line through (%s, %s) and (%s, %s)"),
     x1text.c_str(), y1text.c_str(), x2text.c_str(), y2text.c_str());
   SizeImageAndFrame();
 }
@@ -123,7 +123,7 @@ void RFCanvas::SetContentStatistics()
   mMarks.clear();
   mLines.clear();
   mStats.clear();
-  if (RFStatisticsThread::GetStatisticsInfo().mStatus == 
+  if (RFStatisticsThread::GetStatisticsInfo().mStatus ==
     ReferenceFinder::STATISTICS_DONE) {
     stringstream ss;
     ss << ReferenceFinder::sStatistics;
@@ -167,7 +167,7 @@ void RFCanvas::SizeImageAndFrame()
 
   // Set the size of our image from the image width and height just calculated.
   SetSizeHints(mImageWidth, mImageHeight, mImageWidth, mImageHeight);
-  
+
   // And change the frame size to try to show as much of the new image as
   // possible.
   gFrame->SizeFromCanvas(mImageWidth, mImageHeight);
@@ -194,18 +194,18 @@ void RFCanvas::DoDrawStatus(bool calibrate)
     case ReferenceFinder::DATABASE_EMPTY:
       ss << "Empty...";
      break;
-      
+
     case ReferenceFinder::DATABASE_INITIALIZING:
       ss << "Initializing...";
      break;
-      
+
     case ReferenceFinder::DATABASE_WORKING:
     case ReferenceFinder::DATABASE_RANK_COMPLETE:
       ss << "Initializing rank " << info.mRank << ": " <<
         info.mNumLines << " lines, " <<
         info.mNumMarks << " marks";
       break;
-    
+
     case ReferenceFinder::DATABASE_READY:
       mDC->SetTextForeground(*wxBLACK);
       ss << "Ready: " <<
@@ -227,7 +227,7 @@ void RFCanvas::DoDrawStatus(bool calibrate)
   else {
     int w, h;
 #ifdef __WXGTK__
-    // to be honest, I'm not sure why this is necessary, in wxGTK 2.6.3 at 
+    // to be honest, I'm not sure why this is necessary, in wxGTK 2.6.3 at
     // least; otherwise the status window is not resized while the database
     // is calculated - CAF
     SetSizeHints (wxSize (tw, th));
@@ -263,11 +263,11 @@ record the height of each block in mImageBlocks. The printout will be paginated
 in terms of these blocks.
 *****/
 template <class R>
-void RFCanvas::DoDrawRefs(const typename R::bare_t& ar, vector<R*>& vr, 
+void RFCanvas::DoDrawRefs(const typename R::bare_t& ar, vector<R*>& vr,
   bool calibrate)
 {
   RFASSERT(!(mIsPrinting && calibrate));
-  
+
   int lastY = 0;
   if (calibrate) {
     mDC = new wxClientDC(this);
@@ -275,7 +275,7 @@ void RFCanvas::DoDrawRefs(const typename R::bare_t& ar, vector<R*>& vr,
     mImageHeight = 0;
     mImageBlocks.clear();
   }
-  
+
   if (!calibrate) {
     mDC->SetPen(*wxTRANSPARENT_PEN);
 #if USE_GRAY_BACKGROUND
@@ -298,22 +298,22 @@ void RFCanvas::DoDrawRefs(const typename R::bare_t& ar, vector<R*>& vr,
 
   mDgmOrigin.x = 0;
   mDgmOrigin.y = 0;
-  
+
   if (!mIsPrinting || mPrintPage == mBlockPages[0]) {
     // Show the point we're searching for.
     if (!calibrate) {
-      DrawCaption(mTargetText.c_str());
+      DrawCaption(mTargetText.ToStdString());
     }
     mDgmOrigin.y += PixelsToDC(sTextLeading);
     mDgmOrigin.y += PixelsToDC(sDgmSpacing);
-    
+
     if (calibrate) {
       mImageBlocks.push_back(mDgmOrigin.y);
       lastY = mDgmOrigin.y;
     }
   }
-  
-  // Go through our list and draw all the diagrams in a single row. 
+
+  // Go through our list and draw all the diagrams in a single row.
   for (size_t irow = 0; irow < vr.size(); irow++) {
     if (!mIsPrinting || mPrintPage == mBlockPages[irow + 1]) {
       vr[irow]->BuildDiagrams();
@@ -330,8 +330,8 @@ void RFCanvas::DoDrawRefs(const typename R::bare_t& ar, vector<R*>& vr,
           mImageWidth = max_val(mImageWidth, mDgmOrigin.x);
         }
       }
-      
-      // Also put the text description below the diagrams   
+
+      // Also put the text description below the diagrams
       mDgmOrigin.x = 0;
       mDgmOrigin.y += PixelsToDC(sDgmSpacing);
       ostringstream sd;
@@ -370,7 +370,7 @@ void RFCanvas::DoDrawRefs(const typename R::bare_t& ar, vector<R*>& vr,
     mDC = 0;
     mImageHeight = mDgmOrigin.y;
   }
-  
+
   if (mIsPrinting) {
     mDCScale = 1.0;
   }
@@ -394,7 +394,7 @@ void RFCanvas::DoDrawStatistics(bool calibrate)
   mDC->SetFont(theFont);
   mDC->SetTextForeground(wxColor(127, 127, 127));
   int lastY = 0;
-  
+
   ReferenceFinder::StatisticsInfo info = RFThread::GetStatisticsInfo();
   switch (info.mStatus) {
     case ReferenceFinder::STATISTICS_BEGIN: {
@@ -412,7 +412,7 @@ void RFCanvas::DoDrawStatistics(bool calibrate)
       }
     }
     case ReferenceFinder::STATISTICS_WORKING: {
-      wxString text = wxString::Format(wxT("Trial %d, error = %.4f"), 
+      wxString text = wxString::Format(wxT("Trial %d, error = %.4f"),
         int(info.mIndex), info.mError);
       int tw, th, td;
       mDC->GetTextExtent(text, &tw, &th, &td);
@@ -448,7 +448,7 @@ void RFCanvas::DoDrawStatistics(bool calibrate)
     default:
       RFFAIL("bad case");
   }
-  
+
   if (calibrate) {
     delete mDC;
     mDC = 0;
@@ -664,7 +664,7 @@ Convert a point from model coordinates to DC coordinates
 *****/
 wxPoint RFCanvas::ModelToDC(const XYPt& p)
 {
-  return wxPoint(mDgmOrigin.x + ModelToDC(p.x), 
+  return wxPoint(mDgmOrigin.x + ModelToDC(p.x),
     mDgmOrigin.y - ModelToDC(p.y));
 }
 
@@ -682,7 +682,7 @@ void RFCanvas::DrawPt(const XYPt& aPt, PointStyle pstyle)
 /*****
 Draw a line in the indicated style.
 *****/
-void RFCanvas::DrawLine(const XYPt& fromPt, const XYPt& toPt, 
+void RFCanvas::DrawLine(const XYPt& fromPt, const XYPt& toPt,
   LineStyle lstyle)
 {
   SetLineStyle(lstyle);
@@ -733,7 +733,7 @@ void RFCanvas::DrawPoly(const vector<XYPt>& poly, PolyStyle pstyle)
 /*****
 Draw a text label with its baseline at the point aPt in the indicated style
 *****/
-void RFCanvas::DrawLabel(const XYPt& aPt, const string& aString, 
+void RFCanvas::DrawLabel(const XYPt& aPt, const string& aString,
   LabelStyle lstyle)
 {
   SetLabelStyle(lstyle);

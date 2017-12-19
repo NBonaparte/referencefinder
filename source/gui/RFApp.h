@@ -3,11 +3,11 @@ File:         RFApp.h
 Project:      ReferenceFinder 4.x
 Purpose:      Header for application class
 Author:       Robert J. Lang
-Modified by:  
+Modified by:
 Created:      2006-04-24
 Copyright:    ©1999-2006 Robert J. Lang. All Rights Reserved.
 ******************************************************************************/
- 
+
 #ifndef _RFAPP_H_
 #define _RFAPP_H_
 
@@ -17,6 +17,7 @@ Copyright:    ©1999-2006 Robert J. Lang. All Rights Reserved.
 
 #include "wx/app.h"
 #include "wx/artprov.h"
+#include "wx/cmndata.h"
 
 class RFApp;
 class RFFrame;
@@ -87,13 +88,13 @@ public:
   void ShowOptionalAbout();
   void OnInitCmdLine(wxCmdLineParser& parser);
   bool OnCmdLineParsed(wxCmdLineParser& parser);
-  void AppendPlainItem(wxMenu* menu, int id, const wxString& label, 
+  void AppendPlainItem(wxMenu* menu, int id, const wxString& label,
     const wxString& help);
-  void AppendDecoratedItem(wxMenu* menu, int id, const wxString& label, 
+  void AppendDecoratedItem(wxMenu* menu, int id, const wxString& label,
     const wxString& help, const wxArtID& bmpid);
   wxMenuBar* MakeMenuBar();
   virtual int OnExit();
-  
+
   // Misc getters
   wxPrintData* GetPrintData() { return mPrintData; }
   wxPageSetupDialogData* GetPageSetupDialogData() { return mPageSetupDialogData; }

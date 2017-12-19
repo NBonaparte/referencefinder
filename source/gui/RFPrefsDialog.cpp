@@ -3,11 +3,11 @@ File:         RFPrefsDialog.cpp
 Project:      ReferenceFinder 4.x
 Purpose:      Implementation for Preferences dialog
 Author:       Robert J. Lang
-Modified by:  
+Modified by:
 Created:      2006-04-26
 Copyright:    ©1999-2006 Robert J. Lang. All Rights Reserved.
 ******************************************************************************/
- 
+
 #include "RFPrefsDialog.h"
 #include "RFApp.h"
 #include "RFStackSizer.h"
@@ -43,7 +43,7 @@ Add a pair of entries for a labeled text control
 *****/
 void RFPrefsPanel::AddTextPair(const wxString& caption, wxTextCtrl*& textCtrl)
 {
-  RFStackSizer ss(new wxGridSizer(2, 5, 5), 
+  RFStackSizer ss(new wxGridSizer(2, 5, 5),
     wxSizerFlags(1).Expand().Border(wxALL, 2));
   ss.Add(new wxStaticText(this, wxID_ANY, caption),
     wxSizerFlags().Right().Border(wxTOP, 2));
@@ -68,14 +68,14 @@ Check the bounds on an entered variable value and report any errors.
 bool RFPrefsPanel::CheckBounds(const wxString& caption, wxTextCtrl *textCtrl,
                                double value, double minval, double maxval) {
  if (value < minval) {
-    MsgError(wxString::Format(wxT("Sorry, %s must be greater than %g."), 
+    MsgError(wxString::Format(wxT("Sorry, %s must be greater than %g."),
       caption.c_str(), minval));
     textCtrl->SetSelection(-1, -1);
     textCtrl->SetFocus();
     return false;
   }
   if (value > maxval) {
-    MsgError(wxString::Format(wxT("Sorry, %s must be less than %g."), 
+    MsgError(wxString::Format(wxT("Sorry, %s must be less than %g."),
       caption.c_str(), maxval));
     textCtrl->SetSelection(-1, -1);
     textCtrl->SetFocus();
@@ -90,7 +90,7 @@ Read a double value using the parser and validate, reporting an error if
 the string input is invalid.
 *****/
 bool RFPrefsPanel::ReadVariable(const std::string &varName,
-                                const wxString& caption, wxTextCtrl* textCtrl, 
+                                const wxString& caption, wxTextCtrl* textCtrl,
                                 double& value, double minval, double maxval)
 {
   wxString text = textCtrl->GetValue();
@@ -98,7 +98,7 @@ bool RFPrefsPanel::ReadVariable(const std::string &varName,
   Parser parser;
   Parser::Status st = parser.evaluate (varName, newValue);
   if (! st.isOK ()) {
-    MsgError(wxString::Format(wxT("Sorry, \"%s\" is invalid: %s"), 
+    MsgError(wxString::Format(wxT("Sorry, \"%s\" is invalid: %s"),
       text.c_str(), st.toString ().c_str()));
     textCtrl->SetSelection(-1, -1);
     textCtrl->SetFocus();
@@ -115,13 +115,13 @@ bool RFPrefsPanel::ReadVariable(const std::string &varName,
 Read a double value from the text control and validate. If successful, return
 true and write the value to the passed reference.
 *****/
-bool RFPrefsPanel::ReadDouble(const wxString& caption, wxTextCtrl* textCtrl, 
+bool RFPrefsPanel::ReadDouble(const wxString& caption, wxTextCtrl* textCtrl,
   double& value, double minval, double maxval)
 {
   wxString text = textCtrl->GetValue();
   double newValue;
   if (!text.ToDouble(&newValue)) {
-    MsgError(wxString::Format(wxT("Sorry, \"%s\" is not a valid number."), 
+    MsgError(wxString::Format(wxT("Sorry, \"%s\" is not a valid number."),
       text.c_str()));
     textCtrl->SetSelection(-1, -1);
     textCtrl->SetFocus();
@@ -139,27 +139,27 @@ bool RFPrefsPanel::ReadDouble(const wxString& caption, wxTextCtrl* textCtrl,
 Read a int value from the text control and validate. If successful, return
 true and write the value to the passed reference.
 *****/
-bool RFPrefsPanel::ReadInt(const wxString& caption, wxTextCtrl* textCtrl, 
+bool RFPrefsPanel::ReadInt(const wxString& caption, wxTextCtrl* textCtrl,
   int& value, int minval, int maxval)
 {
   wxString text = textCtrl->GetValue();
   long newValue;
   if (!text.ToLong(&newValue)) {
-    MsgError(wxString::Format(wxT("Sorry, \"%s\" is not a valid number."), 
+    MsgError(wxString::Format(wxT("Sorry, \"%s\" is not a valid number."),
       text.c_str()));
     textCtrl->SetSelection(-1, -1);
     textCtrl->SetFocus();
     return false;
   }
   if (newValue < minval) {
-    MsgError(wxString::Format(wxT("Sorry, %s must be greater than %d."), 
+    MsgError(wxString::Format(wxT("Sorry, %s must be greater than %d."),
       text.c_str(), minval));
     textCtrl->SetSelection(-1, -1);
     textCtrl->SetFocus();
     return false;
   }
   if (newValue > maxval) {
-    MsgError(wxString::Format(wxT("Sorry, %s must be less than %d."), 
+    MsgError(wxString::Format(wxT("Sorry, %s must be less than %d."),
       text.c_str(), maxval));
     textCtrl->SetSelection(-1, -1);
     textCtrl->SetFocus();
@@ -289,8 +289,8 @@ void RFDatabasePrefs::FromConfig()
   wxConfig::Get()->Read(KEY_PAPER_HEIGHT, &mPaperHeightAsText,
                         defaults.mPaperHeightAsText);
   Parser parser;
-  parser.setVariable ("w", mPaperWidthAsText.c_str ());
-  parser.setVariable ("h", mPaperHeightAsText.c_str ());
+  parser.setVariable ("w", mPaperWidthAsText.ToStdString());
+  parser.setVariable ("h", mPaperHeightAsText.ToStdString());
   parser.evaluate ("w", mPaperWidth); // TODO status
   parser.evaluate ("h", mPaperHeight); // TODO status
 
@@ -318,6 +318,7 @@ void RFDatabasePrefs::FromConfig()
 
 
 /*****
+ *
 Write the settings to the ReferenceFinder static variables
 *****/
 void RFDatabasePrefs::ToApp()
@@ -401,7 +402,7 @@ RFDatabasePanel::RFDatabasePanel(wxWindow* parent) :
     { // First column
       RFStackSizer ss(new wxBoxSizer(wxVERTICAL));
       {
-        RFStackSizer ss(new wxStaticBoxSizer(wxVERTICAL, this, 
+        RFStackSizer ss(new wxStaticBoxSizer(wxVERTICAL, this,
           wxT("Paper")), wxSizerFlags().Expand());
         {
           RFStackSizer ss(new wxBoxSizer(wxVERTICAL), wxSizerFlags().Expand());
@@ -410,7 +411,7 @@ RFDatabasePanel::RFDatabasePanel(wxWindow* parent) :
         }
       }
       {
-        RFStackSizer ss(new wxStaticBoxSizer(wxVERTICAL, this, 
+        RFStackSizer ss(new wxStaticBoxSizer(wxVERTICAL, this,
           wxT("Size Limits")), wxSizerFlags().Expand());
         {
           RFStackSizer ss(new wxBoxSizer(wxVERTICAL), wxSizerFlags().Expand());
@@ -420,7 +421,7 @@ RFDatabasePanel::RFDatabasePanel(wxWindow* parent) :
         }
       }
       {
-        RFStackSizer ss(new wxStaticBoxSizer(wxVERTICAL, this, 
+        RFStackSizer ss(new wxStaticBoxSizer(wxVERTICAL, this,
           wxT("Huzita-Hatori Axioms")), wxSizerFlags().Expand());
         {
           RFStackSizer ss(new wxBoxSizer(wxVERTICAL), wxSizerFlags().Expand());
@@ -437,7 +438,7 @@ RFDatabasePanel::RFDatabasePanel(wxWindow* parent) :
     { // 2nd column
       RFStackSizer ss(new wxBoxSizer(wxVERTICAL), wxSizerFlags().Expand());
       {
-        RFStackSizer ss(new wxStaticBoxSizer(wxVERTICAL, this, 
+        RFStackSizer ss(new wxStaticBoxSizer(wxVERTICAL, this,
           wxT("Key Size")), wxSizerFlags().Expand());
         {
           RFStackSizer ss(new wxBoxSizer(wxVERTICAL), wxSizerFlags().Expand());
@@ -448,7 +449,7 @@ RFDatabasePanel::RFDatabasePanel(wxWindow* parent) :
         }
       }
       {
-        RFStackSizer ss(new wxStaticBoxSizer(wxVERTICAL, this, 
+        RFStackSizer ss(new wxStaticBoxSizer(wxVERTICAL, this,
           wxT("Misc Settings")), wxSizerFlags().Expand());
         {
           RFStackSizer ss(new wxBoxSizer(wxVERTICAL), wxSizerFlags().Expand());
@@ -526,8 +527,8 @@ bool RFDatabasePanel::Read()
     oldH = Parser::getVariable ("h");
   bool ok = true;
 
-  Parser::setVariable ("w", mPaperWidth -> GetValue ().c_str ());
-  Parser::setVariable ("h", mPaperHeight -> GetValue ().c_str ());
+  Parser::setVariable ("w", mPaperWidth ->GetValue().ToStdString());
+  Parser::setVariable ("h", mPaperHeight -> GetValue ().ToStdString());
   if (!ReadVariable("w", wxT("paper width"), mPaperWidth,
                     mDatabasePrefs.mPaperWidth, 0.0)
       || !ReadVariable("h", wxT("paper height"), mPaperHeight,
@@ -538,11 +539,11 @@ bool RFDatabasePanel::Read()
   if (!ok)
     return false;
 
-  if (!ReadInt(wxT("maximum rank"), mMaxRank, 
+  if (!ReadInt(wxT("maximum rank"), mMaxRank,
     mDatabasePrefs.mMaxRank, 1)) return false;
-  if (!ReadInt(wxT("maximum lines"), mMaxLines, 
+  if (!ReadInt(wxT("maximum lines"), mMaxLines,
     mDatabasePrefs.mMaxLines, 1)) return false;
-  if (!ReadInt(wxT("maximum marks"), mMaxMarks, 
+  if (!ReadInt(wxT("maximum marks"), mMaxMarks,
     mDatabasePrefs.mMaxMarks, 1)) return false;
   mDatabasePrefs.mAxiom1 = mAxiom1->GetValue();
   mDatabasePrefs.mAxiom2 = mAxiom2->GetValue();
@@ -551,32 +552,32 @@ bool RFDatabasePanel::Read()
   mDatabasePrefs.mAxiom5 = mAxiom5->GetValue();
   mDatabasePrefs.mAxiom6 = mAxiom6->GetValue();
   mDatabasePrefs.mAxiom7 = mAxiom7->GetValue();
-  if (!(mDatabasePrefs.mAxiom1 || mDatabasePrefs.mAxiom2 || 
-    mDatabasePrefs.mAxiom3 || mDatabasePrefs.mAxiom4 || 
-    mDatabasePrefs.mAxiom5 || mDatabasePrefs.mAxiom6 || 
+  if (!(mDatabasePrefs.mAxiom1 || mDatabasePrefs.mAxiom2 ||
+    mDatabasePrefs.mAxiom3 || mDatabasePrefs.mAxiom4 ||
+    mDatabasePrefs.mAxiom5 || mDatabasePrefs.mAxiom6 ||
     mDatabasePrefs.mAxiom7)) {
     MsgError(wxT("Sorry, you must select at least one axiom."));
     return false;
   }
   if (!ReadInt(wxT("X divisions"), mNumX, mDatabasePrefs.mNumX, 2)) return false;
   if (!ReadInt(wxT("Y divisions"), mNumY, mDatabasePrefs.mNumY, 2)) return false;
-  if (mDatabasePrefs.mNumX > std::numeric_limits<ReferenceFinder::key_t>::max() / 
+  if (mDatabasePrefs.mNumX > std::numeric_limits<ReferenceFinder::key_t>::max() /
     mDatabasePrefs.mNumY) {
     MsgError(wxT("Sorry, you must reduce either the number of X buckets or Y buckets"));
     return false;
   }
   if (!ReadInt(wxT("angular divisions"), mNumA, mDatabasePrefs.mNumA, 2)) return false;
   if (!ReadInt(wxT("radial divisions"), mNumD, mDatabasePrefs.mNumD, 2)) return false;
-  if (mDatabasePrefs.mNumA > std::numeric_limits<ReferenceFinder::key_t>::max() / 
+  if (mDatabasePrefs.mNumA > std::numeric_limits<ReferenceFinder::key_t>::max() /
     mDatabasePrefs.mNumD) {
     MsgError(wxT("Sorry, you must reduce either the number of A buckets or D buckets"));
     return false;
   }
-  if (!ReadDouble(wxT("\"good enough\" error"), mGoodEnoughError, 
+  if (!ReadDouble(wxT("\"good enough\" error"), mGoodEnoughError,
     mDatabasePrefs.mGoodEnoughError, 0.0)) return false;
-  if (!ReadDouble(wxT("minimum aspect ratio"), mMinAspectRatio, 
+  if (!ReadDouble(wxT("minimum aspect ratio"), mMinAspectRatio,
     mDatabasePrefs.mMinAspectRatio, 0.0)) return false;
-  if (!ReadDouble(wxT("minimum angle sine"), mMinAngleSine, 
+  if (!ReadDouble(wxT("minimum angle sine"), mMinAngleSine,
     mDatabasePrefs.mMinAngleSine, 0.0, 1.0)) return false;
   if (!ReadInt(wxT("status skip"), mDatabaseStatusSkip, mDatabasePrefs.mDatabaseStatusSkip, 0)) return false;
 
@@ -584,8 +585,8 @@ bool RFDatabasePanel::Read()
   mDatabasePrefs.mLineWorstCaseError = mLineWorstCaseError->GetValue();
   mDatabasePrefs.mPaperWidthAsText = mPaperWidth -> GetValue ();
   mDatabasePrefs.mPaperHeightAsText = mPaperHeight -> GetValue ();
-  Parser::setVariable ("w", mDatabasePrefs.mPaperWidthAsText.c_str ());
-  Parser::setVariable ("h", mDatabasePrefs.mPaperHeightAsText.c_str ());
+  Parser::setVariable ("w", mDatabasePrefs.mPaperWidthAsText.ToStdString());
+  Parser::setVariable ("h", mDatabasePrefs.mPaperHeightAsText.ToStdString());
   return true;
 }
 
@@ -831,7 +832,7 @@ void RFDisplayPanel::Fill()
 {
   mSearchNum->SetValue(wxString::Format(wxT("%d"), mDisplayPrefs.mSearchNum));
   mSearchNum->SetSelection(-1, -1);
-  
+
   mClarifyVerbalAmbiguities->SetValue(mDisplayPrefs.mClarifyVerbalAmbiguities);
   mAxiomsInVerbalDirections->SetValue(mDisplayPrefs.mAxiomsInVerbalDirections);
 
@@ -843,7 +844,7 @@ void RFDisplayPanel::Fill()
   mTextLeading->SetSelection(-1, -1);
   mDgmSpacing->SetValue(wxString::Format(wxT("%d"), mDisplayPrefs.mDgmSpacing));
   mDgmSpacing->SetSelection(-1, -1);
-  
+
   mNumBuckets->SetValue(wxString::Format(wxT("%d"), mDisplayPrefs.mNumBuckets));
   mNumBuckets->SetSelection(-1, -1);
   mBucketSize->SetValue(wxString::Format(wxT("%.4f"), mDisplayPrefs.mBucketSize));
@@ -973,7 +974,7 @@ class RFPrefsDialog - Preferences dialog
 Constructor. Parent needs to be gFrame so that after the dialog is dismissed,
 the frame gets a chance to update the menus.
 *****/
-RFPrefsDialog::RFPrefsDialog() : 
+RFPrefsDialog::RFPrefsDialog() :
   wxDialog(gFrame, wxID_ANY, wxString(wxT("Preferences")))
 {
   {
@@ -988,32 +989,32 @@ RFPrefsDialog::RFPrefsDialog() :
     {
       RFStackSizer ss(new wxBoxSizer(wxHORIZONTAL), wxSizerFlags().Expand());
       wxButton *btnApply, *btnMakeDefault, *btnRestoreDefault, *btnFactoryDefault, *btnDone;
-  
-      ss.Add(btnFactoryDefault = new wxButton(this, RFID_FACTORY_DEFAULT, 
+
+      ss.Add(btnFactoryDefault = new wxButton(this, RFID_FACTORY_DEFAULT,
         wxT("Factory Default")),
         wxSizerFlags().Border(wxALL, 5));
       btnFactoryDefault->SetWindowVariant(wxWINDOW_VARIANT_NORMAL);
       ss.AddStretchSpacer();
-  
-      ss.Add(btnMakeDefault = new wxButton(this, RFID_MAKE_DEFAULT, 
+
+      ss.Add(btnMakeDefault = new wxButton(this, RFID_MAKE_DEFAULT,
         wxT("Make Default")),
         wxSizerFlags().Border(wxALL, 5));
       btnMakeDefault->SetWindowVariant(wxWINDOW_VARIANT_NORMAL);
       ss.AddStretchSpacer();
-  
-      ss.Add(btnRestoreDefault = new wxButton(this, RFID_RESTORE_DEFAULT, 
+
+      ss.Add(btnRestoreDefault = new wxButton(this, RFID_RESTORE_DEFAULT,
         wxT("Restore Default")),
         wxSizerFlags().Border(wxALL, 5));
       btnRestoreDefault->SetWindowVariant(wxWINDOW_VARIANT_NORMAL);
       ss.AddStretchSpacer();
-  
-      ss.Add(btnApply = new wxButton(this, RFID_APPLY, 
+
+      ss.Add(btnApply = new wxButton(this, RFID_APPLY,
         wxT("Apply")),
         wxSizerFlags().Border(wxALL, 5));
       btnApply->SetWindowVariant(wxWINDOW_VARIANT_NORMAL);
       ss.AddStretchSpacer();
-  
-      ss.Add(btnDone = new wxButton(this, wxID_CANCEL, 
+
+      ss.Add(btnDone = new wxButton(this, wxID_CANCEL,
         wxT("Done")),
         wxSizerFlags().Border(wxALL, 5));
       btnDone->SetWindowVariant(wxWINDOW_VARIANT_NORMAL);
@@ -1030,7 +1031,7 @@ Handle Apply button
 *****/
 void RFPrefsDialog::OnApply(wxCommandEvent&)
 {
-  if (mNotebook->GetCurrentPage() == mDatabasePanel) 
+  if (mNotebook->GetCurrentPage() == mDatabasePanel)
     mDatabasePanel->DoApply();
   else if (mNotebook->GetCurrentPage() == mDisplayPanel)
     mDisplayPanel->DoApply();
@@ -1043,7 +1044,7 @@ Handle Make Default button
 *****/
 void RFPrefsDialog::OnMakeDefault(wxCommandEvent&)
 {
-  if (mNotebook->GetCurrentPage() == mDatabasePanel) 
+  if (mNotebook->GetCurrentPage() == mDatabasePanel)
     mDatabasePanel->DoMakeDefault();
   else if (mNotebook->GetCurrentPage() == mDisplayPanel)
     mDisplayPanel->DoMakeDefault();
@@ -1056,7 +1057,7 @@ Handle Restore Default button
 *****/
 void RFPrefsDialog::OnRestoreDefault(wxCommandEvent&)
 {
-  if (mNotebook->GetCurrentPage() == mDatabasePanel) 
+  if (mNotebook->GetCurrentPage() == mDatabasePanel)
     mDatabasePanel->DoRestoreDefault();
   else if (mNotebook->GetCurrentPage() == mDisplayPanel)
     mDisplayPanel->DoRestoreDefault();
@@ -1069,7 +1070,7 @@ Handle Factory Default button
 *****/
 void RFPrefsDialog::OnFactoryDefault(wxCommandEvent&)
 {
-  if (mNotebook->GetCurrentPage() == mDatabasePanel) 
+  if (mNotebook->GetCurrentPage() == mDatabasePanel)
     mDatabasePanel->DoFactoryDefault();
   else if (mNotebook->GetCurrentPage() == mDisplayPanel)
     mDisplayPanel->DoFactoryDefault();

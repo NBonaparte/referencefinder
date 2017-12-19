@@ -3,11 +3,11 @@ File:         RFApp.cpp
 Project:      ReferenceFinder 4.x
 Purpose:      Implementation for application class
 Author:       Robert J. Lang
-Modified by:  
+Modified by:
 Created:      2006-04-24
 Copyright:    ©1999-2006 Robert J. Lang. All Rights Reserved.
 ******************************************************************************/
- 
+
 #include "RFApp.h"
 #include "RFCanvas.h"
 #include "RFFrame.h"
@@ -63,16 +63,16 @@ const wxString SHOW_ABOUT_AT_STARTUP_KEY = wxT("ShowAboutAtStartup");
 About dialog constructor
 *****/
 RFAboutDialog::RFAboutDialog() :
-  wxDialog(NULL, wxID_ANY, wxT("About ReferenceFinder"), wxDefaultPosition, 
+  wxDialog(NULL, wxID_ANY, wxT("About ReferenceFinder"), wxDefaultPosition,
     wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
   {
     RFStackSizer ss(new wxBoxSizer(wxVERTICAL), this);
-    wxStaticText* title = new wxStaticText(this, wxID_ANY, wxT(APP_V_M_B_NAME_STR));
+    wxStaticText* title = new wxStaticText(this, wxID_ANY, wxT_2(APP_V_M_B_NAME_STR));
     title->SetFont(wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
     ss.Add(title, wxSizerFlags().Center().Border(wxALL, 5));
-    
-    mAboutBox = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, 
+
+    mAboutBox = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition,
       wxSize(600, 450));
     int fontSizes[7] = {9, 10, 11, 12, 14, 16, 18};
     mAboutBox->SetFonts(wxEmptyString, wxEmptyString, fontSizes);
@@ -80,19 +80,19 @@ RFAboutDialog::RFAboutDialog() :
     wxFileName aboutFile(wxStandardPaths::Get().GetDataDir(), wxT("about.htm"));
     mAboutBox->LoadFile(aboutFile);
     ss.Add(mAboutBox);
-    
-    mShowAboutAtStartup = new wxCheckBox(this, wxID_ANY, 
+
+    mShowAboutAtStartup = new wxCheckBox(this, wxID_ANY,
       wxT("Show this window at startup"));
     int showAboutAtStartup;
     wxConfig::Get()->Read(SHOW_ABOUT_AT_STARTUP_KEY, &showAboutAtStartup, 1);
     mShowAboutAtStartup->SetValue(showAboutAtStartup);
     ss.Add(mShowAboutAtStartup, wxSizerFlags().Center().Border(wxTOP, 5));
-    
+
     ss.Add(new wxStaticLine(this, wxID_ANY), wxSizerFlags().Expand().Border(wxALL, 5));
     ss.GetSizer()->Add(CreateButtonSizer(wxOK), wxSizerFlags().Center().Border(wxALL, 5));
-  
+
     wxStaticText* buildCode = new wxStaticText(this, wxID_ANY, wxT(BUILD_CODE_STR));
-    buildCode->SetFont(wxFont(9, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, 
+    buildCode->SetFont(wxFont(9, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
       wxFONTWEIGHT_NORMAL));
     ss.Add(buildCode, wxSizerFlags().Right());
   }
@@ -144,10 +144,10 @@ bool RFApp::OnInit()
   if ( !wxApp::OnInit() ) return false;
 
   SetVendorName(wxT("langorigami.com"));
-  SetAppName(wxT(APP_V_NAME_STR));
+  SetAppName(wxT_2(APP_V_NAME_STR));
 
   CheckDirectoryPrefix();
-  
+
   ::wxInitAllImageHandlers();
   wxFileSystem::AddHandler(new wxZipFSHandler());
 
@@ -157,10 +157,10 @@ bool RFApp::OnInit()
   // MSW has to wait until we've created the main frame, see below.
   if (!ShowSplashScreen()) return false;
 #endif
-    
+
 #ifdef __LINUX__
   /* Load icon. Silently ignore failures (SetIcon will also silently fail) */
-  mConfig.mAppIcon.LoadFile(wxStandardPaths::Get().GetDataDir() + 
+  mConfig.mAppIcon.LoadFile(wxStandardPaths::Get().GetDataDir() +
     wxT("/Icon_app_48.png"));
 #endif // __LINUX__
 
@@ -182,15 +182,15 @@ bool RFApp::OnInit()
   gFrame = new RFFrame(wxT("ReferenceFinder"));
   gCanvas->SetContentNone();
   gFrame->Show(true);
-  
+
 #ifdef __WXMSW__
   if (!ShowSplashScreen()) return false;
 #endif
 
   RFDatabaseThread::DoStartDatabase();
-  
+
   ShowOptionalAbout();
-  
+
   mTimer.Start(333);  // check for status updates every 1/3 second
 
   return true;
@@ -213,9 +213,9 @@ void RFApp::CheckDirectoryPrefix()
   else {
     char *p = getenv ("REFERENCEFINDER_PREFIX");
     if (p)
-      prefix = wxT (p);
+      prefix = wxT_2 (p);
     else
-      prefix = wxT (INSTALL_PREFIX);
+      prefix = wxT_2 (INSTALL_PREFIX);
   }
   dynamic_cast<wxStandardPaths &> (wxStandardPaths::Get()).
     SetInstallPrefix(prefix);
@@ -229,12 +229,12 @@ while debugging).
 *****/
 bool RFApp::ShowSplashScreen()
 {
-  wxFileName splashFile(wxStandardPaths::Get().GetDataDir(), 
+  wxFileName splashFile(wxStandardPaths::Get().GetDataDir(),
     wxT("SplashScreen.png"));
   if (splashFile.IsOk() && splashFile.FileExists()) {
 #ifndef RFDEBUG
     const int SPLASH_DURATION = 3000;
-    wxBitmap* splashScreenBitmap = 
+    wxBitmap* splashScreenBitmap =
       new wxBitmap(splashFile.GetFullPath(), wxBITMAP_TYPE_PNG);
     new wxSplashScreen(*splashScreenBitmap,
       wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT,
@@ -264,9 +264,9 @@ bool RFApp::LoadHelp()
 {
   mHtmlEasyPrinting = new wxHtmlEasyPrinting;
   mHtmlEasyPrinting->SetFooter(
-    wxT("<hr><p align=\"right\">page @PAGENUM@ of @PAGESCNT@</p>"), 
+    wxT("<hr><p align=\"right\">page @PAGENUM@ of @PAGESCNT@</p>"),
     wxPAGE_ALL);
-  int fontsizes[] = { 6, 8, 10, 12, 14, 16, 18 }; 
+  int fontsizes[] = { 6, 8, 10, 12, 14, 16, 18 };
   mHtmlEasyPrinting->SetFonts(wxEmptyString, wxEmptyString, fontsizes);
   mHtmlHelpController = new RFHtmlHelpController();
   mHtmlHelpController->UseConfig(wxConfig::Get());
@@ -291,7 +291,7 @@ bool RFApp::LoadHelp()
 #endif
 
   if (!wxFileName::DirExists(userDataDir)) {
-    wxFileName::Mkdir(userDataDir); 
+    wxFileName::Mkdir(userDataDir);
   }
   if (wxFileName::DirExists(userDataDir)) {
     mHtmlHelpController->SetTempDir(userDataDir);
@@ -326,12 +326,12 @@ void RFApp::ShowOptionalAbout()
 Initialize command-line switches that we accept
 *****/
 void RFApp::OnInitCmdLine(wxCmdLineParser &argParser) {
-  argParser.AddSwitch (wxT("v"), wxT("version"), 
+  argParser.AddSwitch (wxT("v"), wxT("version"),
            wxT("show program version"));
-  argParser.AddSwitch (wxT("h"), wxT("help"), 
+  argParser.AddSwitch (wxT("h"), wxT("help"),
            wxT("show option list"), wxCMD_LINE_OPTION_HELP);
   argParser.AddOption(wxT("d"), wxT("datadir"),
-          wxT("set data directory path prefix"), 
+          wxT("set data directory path prefix"),
           wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
 }
 
@@ -359,7 +359,7 @@ bool RFApp::OnCmdLineParsed(wxCmdLineParser& parser) {
 /*****
 Append an item to a menu with no menu icon
 *****/
-void RFApp::AppendPlainItem(wxMenu* menu, int id, const wxString& label, 
+void RFApp::AppendPlainItem(wxMenu* menu, int id, const wxString& label,
   const wxString& help)
 {
   menu->Append(new wxMenuItem(menu, id, label, help));
@@ -369,7 +369,7 @@ void RFApp::AppendPlainItem(wxMenu* menu, int id, const wxString& label,
 /*****
 Append an item to a menu, supplying the wxArtProvider ID for a standard icon.
 *****/
-void RFApp::AppendDecoratedItem(wxMenu* menu, int id, const wxString& label, 
+void RFApp::AppendDecoratedItem(wxMenu* menu, int id, const wxString& label,
   const wxString& help, const wxArtID& bmpid)
 {
   wxMenuItem *item = new wxMenuItem(menu, id, label, help);
@@ -387,7 +387,7 @@ wxMenuBar* RFApp::MakeMenuBar()
 {
   // File menu
   wxMenu *fileMenu = new wxMenu;
-  AppendPlainItem(fileMenu, RFID_EXPORT_PS, 
+  AppendPlainItem(fileMenu, RFID_EXPORT_PS,
     wxT("Export PostScript...\tCtrl+E"),
     wxT("Export currently-displayed diagrams as a PostScript file"));
   fileMenu->AppendSeparator();
@@ -397,19 +397,19 @@ wxMenuBar* RFApp::MakeMenuBar()
 #ifndef __WXMAC__
   fileMenu->AppendSeparator();
 #endif // __WXMAC__
-  AppendDecoratedItem(fileMenu, wxID_PRINT, 
+  AppendDecoratedItem(fileMenu, wxID_PRINT,
     wxT("&Print\tCtrl+P"),
     wxT("Print the currently-displayed diagrams"),
     wxART_PRINT);
 #ifdef __WXMAC__
-  AppendPlainItem(fileMenu, RFID_PAGE_MARGINS, 
+  AppendPlainItem(fileMenu, RFID_PAGE_MARGINS,
     wxT("Page Margins..."),
     wxT("Set the page margins"));
 #endif // __WXMAC__
-  AppendPlainItem(fileMenu, wxID_PRINT_SETUP, 
+  AppendPlainItem(fileMenu, wxID_PRINT_SETUP,
     wxT("Page &Setup..."),
     wxT("Set up the page for printing"));
-  AppendPlainItem(fileMenu, wxID_PREVIEW, 
+  AppendPlainItem(fileMenu, wxID_PREVIEW,
     wxT("Print Pre&view...\tCtrl+Alt+P"),
     wxT("Preview the print image before printing"));
 #ifndef __WXMAC__
@@ -417,19 +417,19 @@ wxMenuBar* RFApp::MakeMenuBar()
 #endif // __WXMAC__
   fileMenu->Append(wxID_EXIT, wxT("E&xit\tAlt+X"), // Mac will move this item
     wxT("Quit this program"));
-  
+
   // Edit menu
   wxMenu* editMenu = new wxMenu;
-  AppendDecoratedItem(editMenu, wxID_UNDO, 
+  AppendDecoratedItem(editMenu, wxID_UNDO,
     wxT("Undo\tCtrl+Z"),
     wxT("Undo the previous action"),
     wxART_UNDO);
   editMenu->AppendSeparator();
-  AppendDecoratedItem(editMenu, wxID_CUT, 
+  AppendDecoratedItem(editMenu, wxID_CUT,
     wxT("Cut\tCtrl+X"),
     wxT("Cut the selection to the Clipboard"),
     wxART_CUT);
-  AppendDecoratedItem(editMenu, wxID_COPY, 
+  AppendDecoratedItem(editMenu, wxID_COPY,
     wxT("Copy\tCtrl+C"),
     wxT("Copy the selection to the Clipboard"),
     wxART_COPY);
@@ -440,27 +440,27 @@ wxMenuBar* RFApp::MakeMenuBar()
   AppendPlainItem(editMenu, wxID_CLEAR,
     wxT("Clear"),
     wxT("Clear the selection"));
-    
+
   // Action menu
   wxMenu* actionMenu = new wxMenu;
-  AppendPlainItem(actionMenu, RFID_TOGGLE_MARKS_LINES, 
+  AppendPlainItem(actionMenu, RFID_TOGGLE_MARKS_LINES,
     wxT("Seek Marks/Lines\tCtrl+T"),
     wxT("Toggle the main window between looking for marks versus lines"));
   actionMenu->AppendSeparator();
-  AppendPlainItem(actionMenu, RFID_GET_REFERENCES, 
+  AppendPlainItem(actionMenu, RFID_GET_REFERENCES,
     wxT("Get References\tCtrl+G"),
     wxT("Search for folding sequences for the specified reference"));
-  AppendPlainItem(actionMenu, RFID_CLEAR_REFERENCES, 
+  AppendPlainItem(actionMenu, RFID_CLEAR_REFERENCES,
     wxT("Clear References\tCtrl+Alt+G"),
     wxT("Clear the currently-displayed references"));
-  AppendPlainItem(actionMenu, RFID_REBUILD, 
+  AppendPlainItem(actionMenu, RFID_REBUILD,
     wxT("Rebuild Database\tCtrl+R"),
     wxT("Rebuild the database of marks and lines"));
-   AppendPlainItem(actionMenu, RFID_CALC_STATISTICS, 
+   AppendPlainItem(actionMenu, RFID_CALC_STATISTICS,
     wxT("Calculate Statistics\tCtrl+I"),
     wxT("Calculate statistics on the current database."));
   actionMenu->AppendSeparator();
-  AppendPlainItem(actionMenu, RFID_HALT_REBUILD, 
+  AppendPlainItem(actionMenu, RFID_HALT_REBUILD,
 #ifdef __WXMAC__
     // On Mac, cmd-period is the universal halt key combination, and cmd-H is
     // predefined at the system level to hide the application.
@@ -469,8 +469,8 @@ wxMenuBar* RFApp::MakeMenuBar()
     wxT("Halt Calculation\tCtrl+H"),
 #endif
     wxT("Halt rebuilding of the database and/or statistical analysis."));
- 
-  
+
+
   // Help menu
   wxMenu *helpMenu = new wxMenu;
   AppendPlainItem(helpMenu, wxID_ABOUT, // Mac will move this item
@@ -478,10 +478,10 @@ wxMenuBar* RFApp::MakeMenuBar()
 #ifndef __WXMAC__
       wxT("\tF1")
 #endif
-      , 
+      ,
     wxT("Show about dialog"));
-  AppendPlainItem(helpMenu, wxID_HELP, 
-    wxT("&Help...\tCtrl+?"), 
+  AppendPlainItem(helpMenu, wxID_HELP,
+    wxT("&Help...\tCtrl+?"),
     wxT("Show the application documentation"));
 
   // Menu bar
@@ -577,7 +577,7 @@ void RFApp::OnQuit(wxCommandEvent& WXUNUSED(event))
 
 
 /*****
-Process a timer event. If the thread status info has changed, we force a 
+Process a timer event. If the thread status info has changed, we force a
 refresh of the display window.
 *****/
 void RFApp::OnTimer(wxTimerEvent&)

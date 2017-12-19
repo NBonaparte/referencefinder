@@ -1,18 +1,18 @@
-### Makefile for building and installing ReferenceFinder 4 in Unix/Linux. 
+### Makefile for building and installing ReferenceFinder 4 in Unix/Linux.
 ### Requires GNU Make or a compatible tool.
 ###   Written by Carlos A. Furuti.
-###   This is part of ReferenceFinder 4 and is available under 
+###   This is part of ReferenceFinder 4 and is available under
 ###     the latter's release conditions.
 
-### Check and optionally change the next few lines in order to match 
+### Check and optionally change the next few lines in order to match
 ### your platform
 
 # Where wxWidgets is installed
-WXHOME = /opt/wxGTK-2.8.0-rc1
+WXHOME = /usr/include/wx-3.0
 # Binary name
 PROGRAM = ReferenceFinder
 # Installation directory prefix (usually /usr/local); by wxWidgets
-# convention for Unix, data files will always be created in a 
+# convention for Unix, data files will always be created in a
 # subdirectory of $(INSTALL_PREFIX)/share
 INSTALL_PREFIX = /usr/local
 
@@ -20,14 +20,14 @@ INSTALL_PREFIX = /usr/local
 
 #--- Compiling options
 OPTIONS =
-OPTIONS += -DAPPNAME=\"$(RF_APP_NAME_STR)\" 
-OPTIONS += -DINSTALL_PREFIX=\"$(INSTALL_PREFIX)/\" 
+OPTIONS += -DAPPNAME=\"$(RF_APP_NAME_STR)\"
+OPTIONS += -DINSTALL_PREFIX=\"$(INSTALL_PREFIX)/\"
 # Temporary for experimental Linux development
 OPTIONS += -DCAF
 
 # Auxiliary wxWidgets apps
-WXCONFIG = $(WXPATH)/wx-config
-WXHLPCACHEDIR = $(WXPATH)/utils/hhp2cached
+WXCONFIG = /usr/bin/wx-config
+WXHLPCACHEDIR = ~/Downloads/wxWidgets-3.0.3.1/utils/hhp2cached
 
 # Auxiliary program files
 HELP = $(BUILDGENERIC)/help.zip
@@ -36,7 +36,7 @@ HELPCACHE = $(H2S)/help/reffinder.hhp.cached
 BUILD ?= release
 
 ifeq ($(BUILD),debug)
-  CONDFLAGS = -DTMWX -D__RFDEBUG__ -g 
+  CONDFLAGS = -DTMWX -D__RFDEBUG__ -g
   WX = debug
 else
 ifeq ($(BUILD),devel)
@@ -191,7 +191,7 @@ FORCE:
 buildprep: FORCE
 	-@mkdir -p $(BUILDROOT)/test
 
-#--- Rules and suffixes 
+#--- Rules and suffixes
 
 include $(DEPENDS)
 
